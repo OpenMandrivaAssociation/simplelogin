@@ -10,6 +10,9 @@ License:	GPLv2+
 Summary:	Simple autologin manager without a UI
 Group:		Embedded
 BuildRequires:	cmake(ECM)
+BuildRequires:	cmake(Qt5DBus)
+BuildRequires:	pam-devel
+BuildRequires:	pkgconfig(systemd)
 BuildRequires:	ninja
 
 %description
