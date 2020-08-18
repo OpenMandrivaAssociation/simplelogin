@@ -1,0 +1,58 @@
+diff -up simplelogin-master/CMakeLists.txt.omv~ simplelogin-master/CMakeLists.txt
+--- simplelogin-master/CMakeLists.txt.omv~	2020-08-18 20:34:03.189016331 +0200
++++ simplelogin-master/CMakeLists.txt	2020-08-18 20:34:19.284216940 +0200
+@@ -44,5 +44,5 @@ install(FILES upstart/simplelogin.conf D
+ install(FILES upstart/simplelogin.override DESTINATION /etc/init)
+ add_subdirectory(systemd)
+ install(PROGRAMS kwinwrapper DESTINATION /usr/bin)
+-install(FILES sddm-autologin DESTINATION /etc/pam.d)
++install(FILES simplelogin DESTINATION /etc/pam.d)
+ 
+diff -up simplelogin-master/HelperApp.cpp.omv~ simplelogin-master/HelperApp.cpp
+--- simplelogin-master/HelperApp.cpp.omv~	2020-08-18 20:33:29.874601001 +0200
++++ simplelogin-master/HelperApp.cpp	2020-08-18 20:33:44.689785720 +0200
+@@ -68,7 +68,7 @@ namespace SDDM {
+         
+         PamHandle *pamHandle = new PamHandle; //TODO fix leak
+ 
+-        if (! pamHandle->start("sddm-autologin" /*PAM session*/, m_user)) //Martin check this exists
++        if (! pamHandle->start("simplelogin" /*PAM session*/, m_user)) //Martin check this exists
+             qFatal("Could not start PAM");
+ 
+         QProcessEnvironment env = m_session->processEnvironment();
+diff -up simplelogin-master/README.omv~ simplelogin-master/README
+--- simplelogin-master/README.omv~	2020-08-18 20:33:47.055815217 +0200
++++ simplelogin-master/README	2020-08-18 20:33:59.640972105 +0200
+@@ -12,9 +12,9 @@ or sssdddmmmm for short.
+ 
+ 
+ Note
+-this file expects sddm-autologin in /etc/pam.d/
++this file expects simplelogin in /etc/pam.d/
+ Use the ubuntu one, not the one from the repo. Ubuntu have a messed up system
+ 
+ renaming the lightdm one should be fine too
+ 
+-exec line can only be one string due to shoddy parsing, if you need to pass args, just go via a shell script or modify the code
+\ No newline at end of file
++exec line can only be one string due to shoddy parsing, if you need to pass args, just go via a shell script or modify the code
+diff -up simplelogin-master/simplelogin.omv~ simplelogin-master/simplelogin
+--- simplelogin-master/simplelogin.omv~	2020-08-18 20:33:20.419483097 +0200
++++ simplelogin-master/simplelogin	2020-08-18 20:33:15.862426268 +0200
+@@ -0,0 +1,16 @@
++#%PAM-1.0
++auth        required    pam_env.so
++auth        required    pam_shells.so
++auth        required    pam_nologin.so
++auth        required    pam_permit.so
++-auth       optional    pam_gnome_keyring.so
++-auth       optional    pam_kwallet5.so
++account     include     system-auth
++password    include     system-auth
++session     required    pam_loginuid.so
++session     optional    pam_keyinit.so force revoke
++session     required    pam_namespace.so
++session     include     system-auth
++-session    optional    pam_gnome_keyring.so auto_start
++-session    optional    pam_kwallet5.so auto_start
++session     include     postlogin
