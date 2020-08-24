@@ -1,4 +1,4 @@
-%define date 20200818
+%define date 20200825
 
 Name:		simplelogin
 Version:	0.0
@@ -31,9 +31,10 @@ embedded devices that have only one user.
 
 %install
 %ninja_install -C build
+# Drop kwinwrapper, we get it from plasma-phone-components now
+rm -f %{buildroot}%{_bindir}/kwinwrapper
 
 %files
-%{_bindir}/kwinwrapper
 %{_bindir}/simplelogin
 /lib/systemd/system/simplelogin.service
 %{_sysconfdir}/init
