@@ -1,9 +1,9 @@
-%define date 20200825
+%define date 20210401
 
 Name:		simplelogin
 Version:	0.0
 Release:	%{?date:0.%{date}.}1
-Source0:	https://invent.kde.org/davidedmundson/simplelogin/-/archive/master/simplelogin-master.tar.bz2
+Source0:	https://invent.kde.org/bshah/simplelogin/-/archive/master/simplelogin-master.tar.bz2
 Patch0:		simplelogin-20200818-pam-session.patch
 Patch1:		simplelogin-omvconfig.patch
 License:	GPLv2+
@@ -31,8 +31,6 @@ embedded devices that have only one user.
 
 %install
 %ninja_install -C build
-# Drop kwinwrapper, we get it from plasma-phone-components now
-rm -f %{buildroot}%{_bindir}/kwinwrapper
 
 %files
 %{_bindir}/simplelogin

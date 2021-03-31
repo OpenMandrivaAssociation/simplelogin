@@ -1,32 +1,12 @@
-diff -up simplelogin-master/kwinwrapper.omv~ simplelogin-master/kwinwrapper
---- simplelogin-master/kwinwrapper.omv~	2020-08-18 20:36:06.391551151 +0200
-+++ simplelogin-master/kwinwrapper	2020-08-18 20:40:52.481109892 +0200
-@@ -1,5 +1,5 @@
- #!/bin/sh
--export $(dbus-launch)
-+export $(dbus-launch-nox)
- export QT_QPA_PLATFORM=wayland
- export QT_QPA_PLATFORMTHEME=KDE
- export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-@@ -13,9 +13,6 @@ export PLASMA_PLATFORM=phone
- export QT_QUICK_CONTROLS_STYLE=Plasma
- export QT_ENABLE_GLYPH_CACHE_WORKAROUND=1
- 
--# work around to fix : https://bugs.launchpad.net/ubuntu/+source/mesa/+bug/1507584
--export LD_LIBRARY_PATH=/usr/lib/arm-linux-gnueabihf/libhybris-egl:$LD_LIBRARY_PATH
--
- if [ "`cat /sys/devices/virtual/dmi/id/board_name`" = "EXOPG06411" ]; then
-   # The ExoPC Slate from Akademy in Berlin only supports OpenGL 1.4, to get it to
-   # work with KWin (which requires 2.0), fake 2.0 support.
-diff -up simplelogin-master/systemd/simplelogin.service.omv~ simplelogin-master/systemd/simplelogin.service
---- simplelogin-master/systemd/simplelogin.service.omv~	2020-08-18 20:41:09.236318142 +0200
-+++ simplelogin-master/systemd/simplelogin.service	2020-08-18 20:41:25.029514421 +0200
-@@ -4,7 +4,7 @@ After=systemd-user-sessions.service gett
- Conflicts=getty@tty1.service
+diff -up simplelogin-master/systemd/simplelogin.service.2~ simplelogin-master/systemd/simplelogin.service
+--- simplelogin-master/systemd/simplelogin.service.2~	2021-04-01 00:54:25.473695923 +0200
++++ simplelogin-master/systemd/simplelogin.service	2021-04-01 00:54:46.291658683 +0200
+@@ -7,7 +7,7 @@ StartLimitIntervalSec=30
+ StartLimitBurst=2
  
  [Service]
--ExecStart=/usr/bin/simplelogin --user phablet --exec kwinwrapper
-+ExecStart=/usr/bin/simplelogin --user omv --exec kwinwrapper
+-ExecStart=/usr/bin/simplelogin --user phablet --session /usr/share/wayland-sessions/plasma-mobile.desktop
++ExecStart=/usr/bin/simplelogin --user omv --session /usr/share/wayland-sessions/plasma-mobile.desktop
  Restart=always
  
  [Install]
